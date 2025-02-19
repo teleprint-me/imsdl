@@ -1,6 +1,9 @@
+#include <GL/glew.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 #include <stdio.h>
+
+GLuint vbo;
 
 SDL_Window* create_window(const char* title, int width, int height) {
     SDL_Window* window = SDL_CreateWindow(
@@ -19,17 +22,41 @@ SDL_Window* create_window(const char* title, int width, int height) {
     return window;
 }
 
-void draw_rectangle(float x, float y, float width, float height) {
-    glBegin(GL_QUADS);
-    glColor3f(1.0f, 1.0f, 1.0f); // White
-    glVertex2f(x, y);
-    glVertex2f(x + width, y);
-    glVertex2f(x + width, y + height);
-    glVertex2f(x, y + height);
-    glEnd();
+void init_opengl(void) {
+    // Vertex data (X, Y)
+    float vertices[] = {
+        100.0f,
+        100.0f, // Top-left
+        300.0f,
+        100.0f, // Top-right
+        300.0f,
+        250.0f, // Bottom-right
+        100.0f,
+        250.0f // Bottom-left
+    };
+
+    // Create Vertex Buffer Object
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    // Enable vertex attributes
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*) 0);
 }
 
-int main(int argc, char* argv[]) {
+void draw(SDL_Window* window) {
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Bind VBO and Draw
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glDrawArrays(GL_QUADS, 0, 4);
+
+    SDL_GL_SwapWindow(window);
+}
+
+int main(void) {
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         fprintf(stderr, "SDL_Init Error: %s\n", SDL_GetError());
         return 1;
@@ -49,14 +76,29 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    if (SDL_GL_SetSwapInterval(1) < 0) { // Enable VSync
-        fprintf(stderr, "Warning: Unable to enable VSync! %s\n", SDL_GetError());
+    // Initialize GLEW (Must be after SDL_GL context is created)
+    glewExperimental = GL_TRUE;
+    GLenum err = glewInit();
+    if (err != GLEW_OK) {
+        printf("GLEW Init Failed: %s\n", glewGetErrorString(err));
+        exit(1);
     }
 
-    // OpenGL coordinate setup
+    // Print OpenGL Info
+    printf("OpenGL Version: %s\n", glGetString(GL_VERSION));
+    printf("GLEW Version: %s\n", glewGetString(GLEW_VERSION));
+
+    // Check if GLEW loaded necessary functions
+    if (!GLEW_VERSION_2_0) {
+        printf("OpenGL 2.0+ is required but not supported!\n");
+        exit(1);
+    }
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, 800, 600, 0, -1, 1); // Set up 2D mode with top-left origin
+    glOrtho(0, 800, 600, 0, -1, 1);
+
+    init_opengl(); // Initialize VBO
 
     int running = 1;
     SDL_Event event;
@@ -67,15 +109,11 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        // Draw the rectangle at (100,100) with size (200,150)
-        draw_rectangle(100.0f, 100.0f, 200.0f, 150.0f);
-
-        SDL_GL_SwapWindow(window);
+        draw(window);
     }
 
+    // Cleanup
+    glDeleteBuffers(1, &vbo);
     SDL_GL_DeleteContext(gl_context);
     SDL_DestroyWindow(window);
     SDL_Quit();
