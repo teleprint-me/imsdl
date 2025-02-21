@@ -64,6 +64,12 @@ void imsdl_init_opengl_context(IMSDL_Viewport* viewport) {
         exit(EXIT_FAILURE);
     }
 
+    // Check if GLEW loaded necessary functions
+    if (!GLEW_VERSION_2_0) {
+        printf("OpenGL 2.0+ is required but not supported!\n");
+        exit(1);
+    }
+
     // Set swap interval for vsync
     SDL_GL_SetSwapInterval(viewport->gl.swap_interval);
 
@@ -74,7 +80,7 @@ void imsdl_init_opengl_context(IMSDL_Viewport* viewport) {
     // Get error code after initialization
     int error_code = glGetError();
     if (error_code != GL_NO_ERROR) {
-        LOG_ERROR("OpenGL Error: %s\n", gluErrorString(error_code));
+        LOG_ERROR("OpenGL Error: %d\n", error_code);
         exit(EXIT_FAILURE);
     }
 }
@@ -164,4 +170,43 @@ void imsdl_handle_events(int* running) {
             *running = 0;
         }
     }
+}
+
+// --- SDL, OpenGL, and Viewport Logging ---
+
+/**
+ * @brief Log Viewport Information
+ */
+void imsdl_log_viewport(IMSDL_Viewport* viewport) {
+    LOG_INFO("Viewport Title: %s\n", viewport->view.title);
+    LOG_INFO("Viewport Width: %d\n", viewport->view.width);
+    LOG_INFO("Viewport Height: %d\n", viewport->view.height);
+    LOG_INFO("Viewport Flags: %d\n", viewport->view.flags);
+    LOG_INFO(
+        "Viewport Color: (%f, %f, %f, %f)\n",
+        (double) viewport->color.r,
+        (double) viewport->color.g,
+        (double) viewport->color.b,
+        (double) viewport->color.a
+    );
+    LOG_INFO("Viewport Swap Interval: %d\n", viewport->gl.swap_interval);
+}
+
+/**
+ * @brief Log SDL and OpenGL Information
+ */
+void imsdl_log_sdl_and_opengl(void) {
+    // Log SDL Info
+    SDL_version version;
+    SDL_GetVersion(&version);
+    LOG_INFO("SDL Version: %d.%d.%d\n", version.major, version.minor, version.patch);
+    int profile;
+    SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &profile);
+    LOG_INFO(
+        "SDL OpenGL Profile: %s\n",
+        (profile == SDL_GL_CONTEXT_PROFILE_CORE) ? "Core" : "Compatibility"
+    );
+    LOG_INFO("OpenGL Version: %s\n", glGetString(GL_VERSION));
+    LOG_INFO("OpenGL Shading Language Version: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
+    LOG_INFO("GLEW Version: %s\n", glewGetString(GLEW_VERSION));
 }

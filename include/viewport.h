@@ -9,6 +9,7 @@
 
 // Include SDL, OpenGL, and GLEW headers
 #include <GL/glew.h>
+#include <GL/gl.h> /// @warning Must be included after glew!
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 
@@ -58,5 +59,9 @@ void imsdl_render(IMSDL_Viewport* viewport);
 
 // Event Handling (Basic)
 void imsdl_handle_events(int* running);
+
+// --- SDL, OpenGL, and Viewport Logging ---
+void imsdl_log_viewport(IMSDL_Viewport* viewport);
+void imsdl_log_sdl_and_opengl(void);
 
 #endif // IMSDL_VIEWPORT_H
