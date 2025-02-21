@@ -72,6 +72,7 @@
   "files.associations": {
     "*.tcss": "jinja-css",
     "*.h": "c",
-    "*.ipp": "c"
+    "*.ipp": "c",
+    "random": "c"
   }
 }
