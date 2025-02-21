@@ -39,7 +39,7 @@ find_package(GLEW REQUIRED)
 include_directories(${GLEW_INCLUDE_DIRS})
 
 # Add executable
-add_executable(imsdl src/main.c)
+add_executable(imsdl src/logger.c src/viewport.c src/main.c)
 
 # Link SDL2, OpenGL, GLFW, and GLEW
-target_link_libraries(imsdl m asan SDL2 GL glfw GLEW::GLEW)
+target_link_libraries(imsdl m SDL2 GL glfw GLEW::GLEW)
