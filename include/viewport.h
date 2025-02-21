@@ -33,3 +33,10 @@ typedef struct IMSDL_Viewport {
     IMSDL_Viewport_GL gl;
     IMSDL_Viewport_Color color;
 } IMSDL_Viewport;
+
+SDL_Window* imsdl_create_window(IMSDL_Viewport* viewport);
+GLenum imsdl_create_opengl_context(IMSDL_Viewport* viewport);
+void imsdl_init_opengl_vertex_buffer(IMSDL_Viewport* viewport, float* vertices, size_t vertex_size);
+void imsdl_render(IMSDL_Viewport* viewport);
+IMSDL_Viewport imsdl_create_viewport(const char* title, int width, int height, int flags);
+void imsdl_destroy_viewport(IMSDL_Viewport viewport);
