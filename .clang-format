@@ -5,6 +5,8 @@
 BasedOnStyle: LLVM
 Language: Cpp
 
+SortIncludes: false
+
 # Pointer and reference alignment
 DerivePointerAlignment: false
 PointerAlignment: Left
