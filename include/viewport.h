@@ -4,15 +4,20 @@
  * @note Avoid memory allocations as much as possible.
  */
 
+#ifndef IMSDL_VIEWPORT_H
+#define IMSDL_VIEWPORT_H
+
+// Include SDL, OpenGL, and GLEW headers
 #include <GL/glew.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 
-// Define Structures
+// Viewport Color
 typedef struct IMSDL_Viewport_Color {
     float r, g, b, a;
 } IMSDL_Viewport_Color;
 
+// Viewport OpenGL
 typedef struct IMSDL_Viewport_GL {
     GLuint vao;
     GLuint vbo;
@@ -20,6 +25,7 @@ typedef struct IMSDL_Viewport_GL {
     int swap_interval;
 } IMSDL_Viewport_GL;
 
+// Viewport SDL Window
 typedef struct IMSDL_Viewport_View {
     SDL_Window* window;
     const char* title;
@@ -28,15 +34,26 @@ typedef struct IMSDL_Viewport_View {
     int flags;
 } IMSDL_Viewport_View;
 
+// Viewport Structure
 typedef struct IMSDL_Viewport {
     IMSDL_Viewport_View view;
     IMSDL_Viewport_GL gl;
     IMSDL_Viewport_Color color;
 } IMSDL_Viewport;
 
-SDL_Window* imsdl_create_window(IMSDL_Viewport* viewport);
-GLenum imsdl_create_opengl_context(IMSDL_Viewport* viewport);
+// Initialize SDL Window and OpenGL Context
+void imsdl_init_sdl_window(IMSDL_Viewport* viewport);
+void imsdl_init_opengl_context(IMSDL_Viewport* viewport);
 void imsdl_init_opengl_vertex_buffer(IMSDL_Viewport* viewport, float* vertices, size_t vertex_size);
+
+// Create and Destroy Viewport
+IMSDL_Viewport* imsdl_create_viewport(const char* title, int width, int height, int flags);
+void imsdl_destroy_viewport(IMSDL_Viewport* viewport);
+
+// Enable and disable vsync
+void imsdl_toggle_vsync(IMSDL_Viewport* viewport);
+
+// Render Function
 void imsdl_render(IMSDL_Viewport* viewport);
-IMSDL_Viewport imsdl_create_viewport(const char* title, int width, int height, int flags);
-void imsdl_destroy_viewport(IMSDL_Viewport viewport);
+
+#endif // IMSDL_VIEWPORT_H
