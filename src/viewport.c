@@ -111,6 +111,19 @@ IMSDL_Viewport* imsdl_create_viewport(const char* title, int width, int height, 
     return viewport; // Return the initialized viewport
 }
 
+void imsdl_destroy_viewport(IMSDL_Viewport* viewport) {
+    if (viewport) {
+        glDeleteVertexArrays(1, &viewport->gl.vao);
+        glDeleteBuffers(1, &viewport->gl.vbo);
+
+        SDL_GL_DeleteContext(viewport->gl.context);
+        SDL_DestroyWindow(viewport->view.window);
+        SDL_Quit();
+
+        free(viewport);
+    }
+}
+
 void imsdl_toggle_vsync(IMSDL_Viewport* viewport) {
     viewport->gl.swap_interval = viewport->gl.swap_interval == 1 ? 0 : 1;
     SDL_GL_SetSwapInterval(viewport->gl.swap_interval);
@@ -118,9 +131,11 @@ void imsdl_toggle_vsync(IMSDL_Viewport* viewport) {
 
 void imsdl_render(IMSDL_Viewport* viewport) {
     glClearColor(viewport->color.r, viewport->color.g, viewport->color.b, viewport->color.a);
-    glViewport(0, 0, viewport->view.width, viewport->view.height);
     glClear(GL_COLOR_BUFFER_BIT);
-    glBindBuffer(GL_ARRAY_BUFFER, viewport->gl.vbo);
-    glDrawArrays(GL_QUADS, 0, 4);
+
+    glBindVertexArray(viewport->gl.vao);
+    glDrawArrays(GL_QUADS, 0, 4); // Render a quad to the viewport
+    glBindVertexArray(0);
+
     SDL_GL_SwapWindow(viewport->view.window);
 }
