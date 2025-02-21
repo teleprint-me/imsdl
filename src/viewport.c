@@ -7,13 +7,23 @@
 #include "viewport.h"
 #include "logger.h"
 
-// Create a SDL window for the viewport
+/**
+ * @brief Initialize SDL Window
+ */
 void imsdl_init_sdl_window(IMSDL_Viewport* viewport) {
+    // Initialize SDL Video subsystem
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        LOG_ERROR("SDL_Init Error: %s\n", SDL_GetError());
+        exit(EXIT_FAILURE);
+    }
+
+    // Set window flags
     if (viewport->view.flags == 0) {
         viewport->view.flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
     }
 
-    SDL_Window* window = SDL_CreateWindow(
+    // Create window with specified flags and dimensions
+    viewport->view.window = SDL_CreateWindow(
         viewport->view.title,
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
@@ -22,27 +32,29 @@ void imsdl_init_sdl_window(IMSDL_Viewport* viewport) {
         viewport->view.flags
     );
 
-    if (!window) {
+    // Check if window creation failed
+    if (!viewport->view.window) {
         LOG_ERROR("SDL_CreateWindow Error: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
-
-    viewport->view.window = window;
 }
 
-// OpenGL Context Creation and Initialization
+/**
+ * @brief Initialize OpenGL Context
+ */
 void imsdl_init_opengl_context(IMSDL_Viewport* viewport) {
-    // Create OpenGL context for the window
+    // Set OpenGL version and profile
+    /// @note I think hardcoding the versions is a bad idea.
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+    // Create OpenGL context
     viewport->gl.context = SDL_GL_CreateContext(viewport->view.window);
     if (!viewport->gl.context) {
         LOG_ERROR("SDL_GL_CreateContext Error: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
-
-    // Set OpenGL version and profile (Core Profile)
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
     // Initialize GLEW
     glewExperimental = GL_TRUE;
@@ -52,8 +64,10 @@ void imsdl_init_opengl_context(IMSDL_Viewport* viewport) {
         exit(EXIT_FAILURE);
     }
 
+    // Set swap interval for vsync
     SDL_GL_SetSwapInterval(viewport->gl.swap_interval);
 
+    // Enable depth testing
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -65,7 +79,9 @@ void imsdl_init_opengl_context(IMSDL_Viewport* viewport) {
     }
 }
 
-// Vertex Buffer Initialization
+/**
+ * @brief Initialize Vertex Buffer
+ */
 void imsdl_init_opengl_vertex_buffer(
     IMSDL_Viewport* viewport, float* vertices, size_t vertex_size
 ) {
@@ -83,34 +99,34 @@ void imsdl_init_opengl_vertex_buffer(
     glBindVertexArray(0);
 }
 
+/**
+ * @brief Create Viewport
+ */
 IMSDL_Viewport* imsdl_create_viewport(const char* title, int width, int height, int flags) {
-    // Allocate memory for the viewport structure
+    // Allocate memory for viewport structure
     IMSDL_Viewport* viewport = (IMSDL_Viewport*) malloc(sizeof(IMSDL_Viewport));
     if (!viewport) {
         LOG_ERROR("Failed to allocate memory for viewport\n");
-        return NULL; // Return NULL on error
+        return NULL;
     }
-    // Initialize the viewport structure
+
+    // Initialize viewport structure
     viewport->view.title = title;
     viewport->view.width = width;
     viewport->view.height = height;
     viewport->view.flags = flags;
     viewport->color = (IMSDL_Viewport_Color) {0.1f, 0.1f, 0.1f, 1.0f};
+    viewport->gl.swap_interval = 1;
 
-    // Set up the OpenGL context
-    viewport->gl.swap_interval = 1; // Enable vsync by default
-    imsdl_init_opengl_context(viewport); // Initialize OpenGL context
+    imsdl_init_sdl_window(viewport);
+    imsdl_init_opengl_context(viewport);
 
-    // Create the SDL window and OpenGL context
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        LOG_ERROR("Failed to initialize SDL: %s\n", SDL_GetError());
-        return NULL; // Return NULL on error
-    }
-    imsdl_init_sdl_window(viewport); // Initialize SDL window
-
-    return viewport; // Return the initialized viewport
+    return viewport;
 }
 
+/**
+ * @brief Destroy Viewport
+ */
 void imsdl_destroy_viewport(IMSDL_Viewport* viewport) {
     if (viewport) {
         glDeleteVertexArrays(1, &viewport->gl.vao);
@@ -124,18 +140,28 @@ void imsdl_destroy_viewport(IMSDL_Viewport* viewport) {
     }
 }
 
-void imsdl_toggle_vsync(IMSDL_Viewport* viewport) {
-    viewport->gl.swap_interval = viewport->gl.swap_interval == 1 ? 0 : 1;
-    SDL_GL_SetSwapInterval(viewport->gl.swap_interval);
-}
-
+/**
+ * @brief Render Function
+ */
 void imsdl_render(IMSDL_Viewport* viewport) {
     glClearColor(viewport->color.r, viewport->color.g, viewport->color.b, viewport->color.a);
     glClear(GL_COLOR_BUFFER_BIT);
 
     glBindVertexArray(viewport->gl.vao);
-    glDrawArrays(GL_QUADS, 0, 4); // Render a quad to the viewport
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     glBindVertexArray(0);
 
     SDL_GL_SwapWindow(viewport->view.window);
+}
+
+/**
+ * @brief Basic Event Handling
+ */
+void imsdl_handle_events(int* running) {
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_QUIT) {
+            *running = 0;
+        }
+    }
 }

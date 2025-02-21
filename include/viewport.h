@@ -1,5 +1,5 @@
 /**
- * @file src/viewport.c
+ * @file include/viewport.h
  * @brief Create a SDL window with OpenGL support.
  * @note Avoid memory allocations as much as possible.
  */
@@ -55,5 +55,8 @@ void imsdl_toggle_vsync(IMSDL_Viewport* viewport);
 
 // Render Function
 void imsdl_render(IMSDL_Viewport* viewport);
+
+// Event Handling (Basic)
+void imsdl_handle_events(int* running);
 
 #endif // IMSDL_VIEWPORT_H
