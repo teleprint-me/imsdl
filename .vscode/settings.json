@@ -9,6 +9,17 @@
   "editor.tabSize": 4,
   "editor.insertSpaces": true,
   "editor.lightbulb.enabled": "off",
+  "editor.wordBasedSuggestions": "off",
+  "editor.suggestSelection": "first",
+  "editor.snippetSuggestions": "bottom",
+  "editor.quickSuggestionsDelay": 500,
+  "editor.quickSuggestions": {
+    "other": "on",
+    "comments": "off",
+    "strings": "off"
+  },
+  "editor.suggestOnTriggerCharacters": false,
+  "editor.suggest.snippetsPreventQuickSuggestions": false,
   "editor.wordWrapColumn": 80,
   "editor.fontFamily": "'Noto Sans Mono', 'Source Code Pro', 'Droid Sans Mono'",
   "[markdown]": {
