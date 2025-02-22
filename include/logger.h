@@ -178,7 +178,9 @@ bool logger_message(Logger* logger, LogLevel log_level, const char* format, ...)
  * @endcode
  */
 #define LOG(logger, level, format, ...) \
-    logger_message((logger), (level), "[%s:%d] " format, __FILE__, __LINE__, ##__VA_ARGS__)
+    logger_message( \
+        (logger), (level), "[%s:%s:%d] " format, __FILE__, __func__, __LINE__, ##__VA_ARGS__ \
+    )
 
 /**
  * @brief Global Logger Object
