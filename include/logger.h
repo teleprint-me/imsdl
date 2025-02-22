@@ -173,13 +173,13 @@ bool logger_message(Logger* logger, LogLevel log_level, const char* format, ...)
  * @param ... Additional arguments for formatting the message (optional).
  *
  * Example usage:
- * @code{.cpp}
+ * @code{.c}
  * LOG(my_logger, LOG_LEVEL_DEBUG, "Debug message: %s\n", "Hello, world!");
  * @endcode
  */
 #define LOG(logger, level, format, ...) \
     logger_message( \
-        (logger), (level), "[%s:%s:%d] " format, __FILE__, __func__, __LINE__, ##__VA_ARGS__ \
+        (logger), (level), "[%s:%s:%d] " format "\n", __FILE__, __func__, __LINE__, ##__VA_ARGS__ \
     )
 
 /**
@@ -247,7 +247,7 @@ void initialize_global_logger(
  * @param ... Additional arguments for formatting the message (optional).
  *
  * Example usage:
- * @code{.cpp}
+ * @code{.c}
  * LOG_DEBUG("Debug message: %s\n", "Hello, world!");
  * LOG_ERROR("Error: %d occurred in function %s\n", error_code, __func__);
  * @endcode

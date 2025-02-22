@@ -18,7 +18,7 @@ struct IMState { // maybe IMSDL_Mouse_State
 int main(void) {
     IMSDL_Viewport* viewport = imsdl_create_viewport("IMSDL", 800, 600, 0);
     if (!viewport) {
-        LOG_ERROR("Failed to create viewport!\n");
+        LOG_ERROR("Failed to create viewport!");
         return 1;
     }
     imsdl_log_sdl_and_opengl();

@@ -13,7 +13,7 @@
 void imsdl_init_sdl_window(IMSDL_Viewport* viewport) {
     // Initialize SDL Video subsystem
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        LOG_ERROR("SDL_Init Error: %s\n", SDL_GetError());
+        LOG_ERROR("SDL_Init Error: %s", SDL_GetError());
         exit(EXIT_FAILURE);
     }
 
@@ -34,7 +34,7 @@ void imsdl_init_sdl_window(IMSDL_Viewport* viewport) {
 
     // Check if window creation failed
     if (!viewport->view.window) {
-        LOG_ERROR("SDL_CreateWindow Error: %s\n", SDL_GetError());
+        LOG_ERROR("SDL_CreateWindow Error: %s", SDL_GetError());
         exit(EXIT_FAILURE);
     }
 }
@@ -52,7 +52,7 @@ void imsdl_init_opengl_context(IMSDL_Viewport* viewport) {
     // Create OpenGL context
     viewport->gl.context = SDL_GL_CreateContext(viewport->view.window);
     if (!viewport->gl.context) {
-        LOG_ERROR("SDL_GL_CreateContext Error: %s\n", SDL_GetError());
+        LOG_ERROR("SDL_GL_CreateContext Error: %s", SDL_GetError());
         exit(EXIT_FAILURE);
     }
 
@@ -60,7 +60,7 @@ void imsdl_init_opengl_context(IMSDL_Viewport* viewport) {
     glewExperimental = GL_TRUE;
     GLenum glewResult = glewInit();
     if (glewResult != GLEW_OK) {
-        LOG_ERROR("GLEW Initialization Error: %s\n", glewGetErrorString(glewResult));
+        LOG_ERROR("GLEW Initialization Error: %s", glewGetErrorString(glewResult));
         exit(EXIT_FAILURE);
     }
 
@@ -80,7 +80,7 @@ void imsdl_init_opengl_context(IMSDL_Viewport* viewport) {
     // Get error code after initialization
     int error_code = glGetError();
     if (error_code != GL_NO_ERROR) {
-        LOG_ERROR("OpenGL Error: %d\n", error_code);
+        LOG_ERROR("OpenGL Error: %d", error_code);
         exit(EXIT_FAILURE);
     }
 }
@@ -112,7 +112,7 @@ IMSDL_Viewport* imsdl_create_viewport(const char* title, int width, int height, 
     // Allocate memory for viewport structure
     IMSDL_Viewport* viewport = (IMSDL_Viewport*) malloc(sizeof(IMSDL_Viewport));
     if (!viewport) {
-        LOG_ERROR("Failed to allocate memory for viewport\n");
+        LOG_ERROR("Failed to allocate memory for viewport.");
         return NULL;
     }
 
@@ -180,18 +180,18 @@ void imsdl_handle_events(int* running) {
  * @brief Log Viewport Information
  */
 void imsdl_log_viewport(IMSDL_Viewport* viewport) {
-    LOG_INFO("Viewport Title: %s\n", viewport->view.title);
-    LOG_INFO("Viewport Width: %d\n", viewport->view.width);
-    LOG_INFO("Viewport Height: %d\n", viewport->view.height);
-    LOG_INFO("Viewport Flags: %d\n", viewport->view.flags);
+    LOG_INFO("Viewport Title: %s", viewport->view.title);
+    LOG_INFO("Viewport Width: %d", viewport->view.width);
+    LOG_INFO("Viewport Height: %d", viewport->view.height);
+    LOG_INFO("Viewport Flags: %d", viewport->view.flags);
     LOG_INFO(
-        "Viewport Color: (%f, %f, %f, %f)\n",
+        "Viewport Color: (%f, %f, %f, %f)",
         (double) viewport->color.r,
         (double) viewport->color.g,
         (double) viewport->color.b,
         (double) viewport->color.a
     );
-    LOG_INFO("Viewport Swap Interval: %d\n", viewport->gl.swap_interval);
+    LOG_INFO("Viewport Swap Interval: %d", viewport->gl.swap_interval);
 }
 
 /**
@@ -201,14 +201,14 @@ void imsdl_log_sdl_and_opengl(void) {
     // Log SDL Info
     SDL_version version;
     SDL_GetVersion(&version);
-    LOG_INFO("SDL Version: %d.%d.%d\n", version.major, version.minor, version.patch);
+    LOG_INFO("SDL Version: %d.%d.%d", version.major, version.minor, version.patch);
     int profile;
     SDL_GL_GetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, &profile);
     LOG_INFO(
-        "SDL OpenGL Profile: %s\n",
+        "SDL OpenGL Profile: %s",
         (profile == SDL_GL_CONTEXT_PROFILE_CORE) ? "Core" : "Compatibility"
     );
-    LOG_INFO("OpenGL Version: %s\n", glGetString(GL_VERSION));
-    LOG_INFO("OpenGL Shading Language Version: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
-    LOG_INFO("GLEW Version: %s\n", glewGetString(GLEW_VERSION));
+    LOG_INFO("OpenGL Version: %s", glGetString(GL_VERSION));
+    LOG_INFO("OpenGL Shading Language Version: %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
+    LOG_INFO("GLEW Version: %s", glewGetString(GLEW_VERSION));
 }

@@ -10,25 +10,25 @@
 Arena* arena_create(size_t initial_capacity, size_t element_size, size_t alignment) {
     // Ensure valid input
     if (initial_capacity == 0) {
-        LOG_ERROR("Invalid initial capacity, must be greater than 0.\n");
+        LOG_ERROR("Invalid initial capacity, must be greater than 0.");
         return NULL;
     }
     if (element_size == 0) {
-        LOG_ERROR("Invalid element size, must be greater than 0.\n");
+        LOG_ERROR("Invalid element size, must be greater than 0.");
         return NULL;
     }
 
     // Allocate memory for the arena structure
     Arena* arena = (Arena*) malloc(sizeof(Arena));
     if (arena == NULL) {
-        LOG_ERROR("Failed to allocate memory for Arena.\n");
+        LOG_ERROR("Failed to allocate memory for Arena.");
         return NULL;
     }
 
     // Allocate memory for the data array with alignment
-    arena->data = aligned_malloc(alignment, initial_capacity * element_size;);
+    arena->data = aligned_malloc(alignment, initial_capacity * element_size);
     if (arena->data == NULL) {
-        LOG_ERROR("Failed to allocate memory for Arena data.\n");
+        LOG_ERROR("Failed to allocate memory for Arena data.");
         free(arena);
         return NULL;
     }

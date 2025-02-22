@@ -11,7 +11,7 @@
 char* imsdl_read_shader(const char* filepath) {
     FILE* file = fopen(filepath, "r");
     if (!file) {
-        LOG_ERROR("Failed to open file: %s\n", filepath);
+        LOG_ERROR("Failed to open file: %s", filepath);
         return NULL;
     }
 
@@ -37,7 +37,7 @@ GLuint imsdl_compile_shader(const char* source, GLenum type) {
     if (!success) {
         char infoLog[512];
         glGetShaderInfoLog(shader, 512, NULL, infoLog);
-        LOG_ERROR("Shader Compilation Failed: %s\n", infoLog);
+        LOG_ERROR("Shader Compilation Failed: %s", infoLog);
     }
 
     return shader;
@@ -60,7 +60,7 @@ GLuint imsdl_create_shader_program(const char* vertex_file, const char* fragment
     if (!success) {
         char infoLog[512];
         glGetProgramInfoLog(shader_program, 512, NULL, infoLog);
-        LOG_ERROR("Shader Program Linking Failed: %s\n", infoLog);
+        LOG_ERROR("Shader Program Linking Failed: %s", infoLog);
     }
 
     glDeleteShader(vertex_shader);
