@@ -55,7 +55,7 @@ void imsdl_destroy_viewport(IMSDL_Viewport* viewport);
 void imsdl_toggle_vsync(IMSDL_Viewport* viewport);
 
 // Render Function
-void imsdl_render(IMSDL_Viewport* viewport);
+void imsdl_render(IMSDL_Viewport* viewport, GLuint shader_program);
 
 // Event Handling (Basic)
 void imsdl_handle_events(int* running);

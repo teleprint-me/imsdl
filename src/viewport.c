@@ -149,13 +149,15 @@ void imsdl_destroy_viewport(IMSDL_Viewport* viewport) {
 /**
  * @brief Render Function
  */
-void imsdl_render(IMSDL_Viewport* viewport) {
+void imsdl_render(IMSDL_Viewport* viewport, GLuint shader_program) {
     glClearColor(viewport->color.r, viewport->color.g, viewport->color.b, viewport->color.a);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    glUseProgram(shader_program);
     glBindVertexArray(viewport->gl.vao);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     glBindVertexArray(0);
+    glUseProgram(0);
 
     SDL_GL_SwapWindow(viewport->view.window);
 }
