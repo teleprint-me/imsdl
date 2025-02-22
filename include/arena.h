@@ -9,7 +9,6 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stddef.h>
-#include <stdalign.h>
 
 /**
  * @struct Arena

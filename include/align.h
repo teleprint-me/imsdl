@@ -10,8 +10,9 @@
 #define IMSDL_ALIGN_H
 
 #include <stdlib.h>
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
+#include <stdalign.h>
 
 #ifdef _WIN32
     #include <malloc.h>
