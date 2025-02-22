@@ -84,6 +84,7 @@
     "*.tcss": "jinja-css",
     "*.h": "c",
     "*.ipp": "c",
-    "random": "c"
+    "random": "c",
+    "charconv": "c"
   }
 }
