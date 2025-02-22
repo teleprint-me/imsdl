@@ -14,7 +14,7 @@ static void* aligned_pointer(void* ptr, size_t alignment) {
         return NULL;
     }
     if (alignment == 0 || (alignment & (alignment - 1)) != 0) {
-        LOG_ERROR("%s: Invalid alignment, must be a power of 2.\n", __func__);
+        LOG_ERROR("Invalid alignment, must be a power of 2.\n");
         return NULL;
     }
 
@@ -31,7 +31,7 @@ void* aligned_malloc(size_t alignment, size_t size) {
         alignment = sizeof(void*);
     }
     if ((alignment & (alignment - 1)) != 0) {
-        LOG_ERROR("%s: Alignment %zu is not a power of 2.\n", __func__, alignment);
+        LOG_ERROR("Alignment %zu is not a power of 2.\n", alignment);
         return NULL;
     }
 
@@ -39,19 +39,13 @@ void* aligned_malloc(size_t alignment, size_t size) {
 #ifdef _WIN32
     ptr = _aligned_malloc(size, alignment);
     if (ptr == NULL) {
-        LOG_ERROR(
-            "%s: _aligned_malloc failed (alignment=%zu, size=%zu).\n", __func__, alignment, size
-        );
+        LOG_ERROR("_aligned_malloc failed (alignment=%zu, size=%zu).\n", alignment, size);
     }
 #else
     int result = posix_memalign(&ptr, alignment, size);
     if (result != 0) {
         LOG_ERROR(
-            "%s: posix_memalign failed (alignment=%zu, size=%zu, error=%d).\n",
-            __func__,
-            alignment,
-            size,
-            result
+            "posix_memalign failed (alignment=%zu, size=%zu, error=%d).\n", alignment, size, result
         );
         return NULL;
     }
