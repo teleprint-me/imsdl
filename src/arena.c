@@ -8,7 +8,8 @@
 #include <stddef.h>
 #include <stdalign.h>
 
-#include <logger.h>
+#include "logger.h"
+#include "align.h"
 #include "arena.h"
 
 typedef struct Arena {
@@ -18,15 +19,6 @@ typedef struct Arena {
     size_t capacity; // Total capacity of the arena in elements
     size_t size; // Number of elements currently used in the arena
 } Arena;
-
-// Helper function to align pointer
-static void* align_pointer(void* ptr, size_t alignment) {
-    uintptr_t addr = (uintptr_t) ptr;
-    if (addr % alignment != 0) {
-        addr += alignment - (addr % alignment);
-    }
-    return (void*) addr;
-}
 
 Arena* arena_create(size_t initial_capacity, size_t element_size, size_t alignment) {
     // Ensure valid input
@@ -38,10 +30,6 @@ Arena* arena_create(size_t initial_capacity, size_t element_size, size_t alignme
         LOG_ERROR("Invalid element size, must be greater than 0.\n");
         return NULL;
     }
-    if (alignment == 0 || (alignment & (alignment - 1)) == 1) {
-        LOG_ERROR("Invalid alignment, must be a power of 2.\n");
-        return NULL;
-    }
 
     // Allocate memory for the arena structure
     Arena* arena = (Arena*) malloc(sizeof(Arena));
@@ -50,16 +38,15 @@ Arena* arena_create(size_t initial_capacity, size_t element_size, size_t alignme
         return NULL;
     }
 
-    // Allocate extra space to ensure alignment
-    void* raw_data = malloc(initial_capacity * element_size + alignment;);
-    if (raw_data == NULL) {
+    // Allocate memory for the data array with alignment
+    arena->data = aligned_malloc(alignment, initial_capacity * element_size;);
+    if (arena->data == NULL) {
         LOG_ERROR("Failed to allocate memory for Arena data.\n");
         free(arena);
         return NULL;
     }
 
-    // Align the data pointer
-    arena->data = (void*) align_pointer(raw_data, alignment);
+    // Initialize arena fields
     arena->size = 0;
     arena->capacity = initial_capacity;
     arena->element_size = element_size;
