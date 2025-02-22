@@ -86,6 +86,8 @@
     "*.ipp": "c",
     "random": "c",
     "charconv": "c",
-    "string_view": "c"
+    "string_view": "c",
+    "format": "c",
+    "thread": "c"
   }
 }
