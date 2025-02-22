@@ -26,7 +26,7 @@
  * @param alignment The alignment requirement, must be a power of 2 and at least sizeof(void*).
  * @return A pointer to the aligned memory, or NULL if alignment fails.
  */
-static void* aligned_pointer(void* ptr, size_t alignment);
+void* aligned_pointer(void* ptr, size_t alignment);
 
 /**
  * @brief Allocates aligned memory.

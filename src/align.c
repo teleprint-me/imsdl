@@ -9,7 +9,7 @@
 #include "logger.h"
 #include "align.h"
 
-static void* aligned_pointer(void* ptr, size_t alignment) {
+void* aligned_pointer(void* ptr, size_t alignment) {
     if (ptr == NULL) {
         return NULL;
     }
