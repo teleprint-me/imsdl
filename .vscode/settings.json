@@ -14,7 +14,7 @@
   "editor.snippetSuggestions": "bottom",
   "editor.quickSuggestionsDelay": 500,
   "editor.quickSuggestions": {
-    "other": "on",
+    "other": "off",
     "comments": "off",
     "strings": "off"
   },
