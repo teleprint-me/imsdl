@@ -1,5 +1,6 @@
 #include "logger.h"
 #include "viewport.h"
+#include "shaders.h"
 
 #include <stdio.h>
 
@@ -15,39 +16,26 @@ struct IMState { // maybe IMSDL_Mouse_State
 };
 
 int main(void) {
-
-    // Initialize the window and opengl context.
     IMSDL_Viewport* viewport = imsdl_create_viewport("IMSDL", 800, 600, 0);
     if (!viewport) {
         LOG_ERROR("Failed to create viewport!\n");
         return 1;
     }
-    /// @note Viewport must be initialized before logging.
     imsdl_log_sdl_and_opengl();
     imsdl_log_viewport(viewport);
 
-    // Initialize the vertex buffer.
     float vertices[] = {-0.5f, -0.5f, 0.5f, -0.5f, 0.5f, 0.5f, -0.5f, 0.5f};
     imsdl_init_opengl_vertex_buffer(viewport, vertices, sizeof(vertices));
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0, 800, 600, 0, -1, 1);
+    GLuint shader_program
+        = imsdl_create_shader_program("shaders/vertex.glsl", "shaders/fragment.glsl");
 
     int running = 1;
-    SDL_Event event;
     while (running) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                running = 0;
-            }
-        }
-
-        imsdl_render(viewport);
+        imsdl_handle_events(&running);
+        imsdl_render(viewport, shader_program);
     }
 
-    // Cleanup
     imsdl_destroy_viewport(viewport);
-
     return 0;
 }
