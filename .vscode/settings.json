@@ -9,16 +9,16 @@
   "editor.tabSize": 4,
   "editor.insertSpaces": true,
   "editor.lightbulb.enabled": "off",
-  "editor.wordBasedSuggestions": "off",
+  "editor.wordBasedSuggestions": "allDocuments",
   "editor.suggestSelection": "first",
   "editor.snippetSuggestions": "bottom",
   "editor.quickSuggestionsDelay": 500,
   "editor.quickSuggestions": {
-    "other": "off",
+    "other": "on",
     "comments": "off",
-    "strings": "off"
+    "strings": "on"
   },
-  "editor.suggestOnTriggerCharacters": false,
+  "editor.suggestOnTriggerCharacters": true,
   "editor.suggest.snippetsPreventQuickSuggestions": false,
   "editor.wordWrapColumn": 80,
   "editor.fontFamily": "'Noto Sans Mono', 'Source Code Pro', 'Droid Sans Mono'",
